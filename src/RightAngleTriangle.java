@@ -1,31 +1,58 @@
 import java.util.Scanner;
 
 public class RightAngleTriangle {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+   import java.util.Scanner;
 
-        System.out.print("Enter first side: ");
-        int a = sc.nextInt();
+/**
+ * RightAngleTriangle utilities.
+ * - Validates input (positive sides and triangle inequality).
+ * - Uses a tolerance when checking Pythagorean relation to avoid floating point issues.
+ */
+public class RightAngleTriangle {
 
-        System.out.print("Enter second side: ");
-        int b = sc.nextInt();
+    private static final double EPSILON = 1e-9;
 
-        System.out.print("Enter third side: ");
-        int c = sc.nextInt();
-
-        if (isRightAngled(a, b, c)) {
-            System.out.println("✅ It is a right-angled triangle.");
-        } else {
-            System.out.println("❌ It is not a right-angled triangle.");
+    /**
+     * Returns true if the sides form a right-angled triangle.
+     * Throws IllegalArgumentException for non-positive sides or if they don't form a valid triangle.
+     */
+    public static boolean isRightAngled(int a, int b, int c) {
+        // Validate positive
+        if (a <= 0 || b <= 0 || c <= 0) {
+            throw new IllegalArgumentException("Sides must be positive numbers");
+        }
+        // Validate triangle inequality
+        if (!(a + b > c && a + c > b && b + c > a)) {
+            throw new IllegalArgumentException("Sides do not form a valid triangle");
         }
 
-        sc.close();
+        double a2 = a * a;
+        double b2 = b * b;
+        double c2 = c * c;
+
+        // check with tolerance
+        if (Math.abs(a2 + b2 - c2) < EPSILON) return true;
+        if (Math.abs(b2 + c2 - a2) < EPSILON) return true;
+        if (Math.abs(c2 + a2 - b2) < EPSILON) return true;
+
+        return false;
     }
 
-    // Method to check if it's a right-angled triangle
-    public static boolean isRightAngled(int a, int b, int c) {
-        return (a * a + b * b == c * c) ||(a * a + c * c == b * b) ||(b * b + c * c == a * a);
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter three side lengths (space-separated):");
+        double a = sc.nextDouble();
+        double b = sc.nextDouble();
+        double c = sc.nextDouble();
+        try {
+            if (isRightAngled(a, b, c))
+                System.out.println("Forms a right angled triangle");
+            else
+                System.out.println("Does not form a right angled triangle");
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Invalid input: " + ex.getMessage());
+        } finally {
+            sc.close();
+        }
     }
 }
-
-
